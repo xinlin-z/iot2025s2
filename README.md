@@ -10,7 +10,3 @@ png and `init_iotdb.sql`
 $ python test_iotdb.py <ip> <passwd>
 ```
 
-```shell
-$ python test_iotdb.py  170.64.231.63 'IoT!proj2025s2'
-```
-
