@@ -20,4 +20,11 @@ library installation, database table design, program design, and etc.
 setup all components first time, run a simple test, collect 25 images for one
 meal for test purpose.
 
+## 2nd Setup
+
+date: 17-09-2025
+
+visit Vik's house, solve final issues, start collecting data as muas as
+possible. 
+
 
