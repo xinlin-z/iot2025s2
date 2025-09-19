@@ -44,7 +44,7 @@ CREATE TABLE Image (
     id SERIAL PRIMARY KEY,
     session INTEGER NOT NULL,
     datetime TIMESTAMP NOT NULL,
-    ingredient VARCHAR(1024) NOT NULL,
-    style VARCHAR(32) NOT NULL
+    ingredient VARCHAR(1024),
+    style VARCHAR(32)
 );
 
