@@ -49,9 +49,10 @@ CREATE TABLE IF NOT EXISTS Image (
 );
 
 
+-- session id might be duplicated,
 CREATE TABLE IF NOT EXISTS Image2 (
     id SERIAL PRIMARY KEY,
-    session INTEGER NOT NULL,    -- one session, one row
+    session INTEGER NOT NULL,
     datetime TIMESTAMP NOT NULL, -- datetime from 1st image
     ingredient VARCHAR(1024),
     style VARCHAR(32),
