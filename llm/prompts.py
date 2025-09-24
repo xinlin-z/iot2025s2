@@ -75,3 +75,45 @@ Example, if people are steaming something, plese reply:
 ```
 ''')
 
+
+PROMPT_04 = SystemMessage(content='''
+The uploaded images are a series for a cooking activity.
+They represent the process of cooking. You task is to identify
+four things:
+
+1, make a judgement if the series images belong to a cooking activity, 
+true or false.
+
+2, what kind of ingredients are used? a list of ingredients.
+
+3, what's the cooking style? such as 'grilling', 'frying',
+'baking', 'boiling' and etc., cooking style should be
+only one word.
+
+4, a short description about the cooking process. less than
+200 words.
+
+Your response must follow this JSON format with markdown syntax:
+```json
+{
+    "cooking": <true or false>,
+    "ingredient": [<ingredient list>],
+    "style": <cooking style>,
+    "description": <short description>
+}
+```
+
+When cooking is false, the other fields could be all none.
+
+Here is one example:
+
+Example, if the series of images are steaming something, the reply could be:
+```json
+{
+    "cooking": true,
+    "ingredient": ["potato","eggplant"],
+    "style": "steaming",
+    "description": "a simple meal, steaming potato and eggplant, healthy and delicious."
+}
+```
+''')
