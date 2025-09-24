@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS Image;*/
 
 
 -- Create Switch table
-CREATE TABLE Switch (
+CREATE TABLE IF NOT EXISTS Switch (
     id SERIAL PRIMARY KEY,
     session INTEGER NOT NULL,
     datetime TIMESTAMP NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE Switch (
 );
 
 -- Create Temperature table
-CREATE TABLE Temperature (
+CREATE TABLE IF NOT EXISTS Temperature (
     id SERIAL PRIMARY KEY,
     session INTEGER NOT NULL,
     datetime TIMESTAMP NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE Temperature (
 );
 
 -- Create Motion1 table
-CREATE TABLE Motion1 (
+CREATE TABLE IF NOT EXISTSMotion1 (
     id SERIAL PRIMARY KEY,
     session INTEGER NOT NULL,
     datetime TIMESTAMP NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE Motion1 (
 );
 
 -- Create Motion2 table
-CREATE TABLE Motion2 (
+CREATE TABLE IF NOT EXISTS Motion2 (
     id SERIAL PRIMARY KEY,
     session INTEGER NOT NULL,
     datetime TIMESTAMP NOT NULL,
@@ -40,11 +40,21 @@ CREATE TABLE Motion2 (
 );
 
 -- Create Image table
-CREATE TABLE Image (
+CREATE TABLE IF NOT EXISTS Image (
     id SERIAL PRIMARY KEY,
     session INTEGER NOT NULL,
     datetime TIMESTAMP NOT NULL,
     ingredient VARCHAR(1024),
     style VARCHAR(32)
+);
+
+
+CREATE TABLE IF NOT EXISTS Image2 (
+    id SERIAL PRIMARY KEY,
+    session INTEGER NOT NULL,    -- one session, one row
+    datetime TIMESTAMP NOT NULL, -- datetime from 1st image
+    ingredient VARCHAR(1024),
+    style VARCHAR(32),
+    description VARCHAR(4096)
 );
 
