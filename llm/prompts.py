@@ -90,8 +90,8 @@ true or false.
 'baking', 'boiling' and etc., cooking style should be
 only one word.
 
-4, a short description about the cooking process. less than
-200 words.
+4, a short description about the cooking process, less than
+200 words, start with "This is the process of...".
 
 Your response must follow this JSON format with markdown syntax:
 ```json
