@@ -69,23 +69,23 @@ def interpret_process(llm, fn):
         
         resp = interpret_img(llm, fn_b64, PROMPT_04)
         resp = j2d(resp)
-        
         print(resp['cooking'])
-        assert resp['cooking'] in (True,False)
+
         if resp['cooking']:
+            resp = interpret_img(llm, fn_b64, PROMPT_05)
+            resp = j2d(resp)
             print(resp['style'])
-            assert isinstance(resp['style'], str)
             style = resp['style']
 
+            resp = interpret_img(llm, fn_b64, PROMPT_06)
+            resp = j2d(resp)
             print(resp['ingredient'])
-            assert isinstance(resp['ingredient'], list)
-            for s in resp['ingredient']:
-                assert isinstance(s, str)
             ingredient = resp['ingredient']
-            
-            print(resp['description'])
-            assert isinstance(resp['description'], str)
-            desc = resp['description']
+
+            resp = interpret_img(llm, fn_b64, PROMPT_07)
+            resp = j2d(resp)
+            print(resp['desc'])
+            desc = resp['desc']
  
             # write DB, IoT!proj2025s2
             with pg.connect(conn_str) as conn:
