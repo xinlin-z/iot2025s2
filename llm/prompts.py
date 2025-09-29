@@ -175,7 +175,8 @@ PROMPT_07 = SystemMessage(content='''
 This series of images is for a cooking activity.
 They represent the process of cooking.
 Your task is to give me a short description on the
-whole cooking process. Try to make simple, accurate
+whole cooking process from start to end.
+Try to make simple, accurate
 and only include what you could see in images.
 
 Your response must follow this JSON format with markdown syntax:

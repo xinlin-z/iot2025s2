@@ -10,11 +10,11 @@ import psycopg as pg
 from prompts import *
 
 
-HOST = sys.argv[1].strip()
+HOST = sys.argv[2].strip()
 PORT = '5432'
 DBNAME = 'iotdb'
 OWNER = 'iotproj'
-PASSWD = sys.argv[2].strip()
+PASSWD = sys.argv[3].strip()
 conn_owner = {'dbname': DBNAME,
               'host': HOST,
               'port': PORT,
@@ -25,7 +25,7 @@ conn_str = f'postgresql://{OWNER}:{PASSWD}@{HOST}:{PORT}/{DBNAME}'
 
 IMG_PATH = Path('images')
 MODEL = 'gemma3:27b'
-LLM_HOST = 'http://146.190.249.52:11444'
+LLM_HOST = f'http://{sys.argv[1].strip()}:11444'
 
 
 j2d = lambda x: json.loads(x.split('```')[1][4:])
@@ -129,8 +129,8 @@ if __name__ == "__main__":
             # give each image two chances
             for _ in range(2):
                 if interpret_process(llm, img) is True:
+                    # save
+                    with open('fskip.txt', 'a+') as f:
+                        f.write(img.name+'\n')
                     break
 
-            # save
-            with open('fskip.txt', 'a+') as f:
-                f.write(img.name+'\n')

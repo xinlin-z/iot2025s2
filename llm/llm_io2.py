@@ -10,11 +10,11 @@ import psycopg as pg
 from prompts import *
 
 
-HOST = sys.argv[1].strip()
+HOST = sys.argv[2].strip()
 PORT = '5432'
 DBNAME = 'iotdb'
 OWNER = 'iotproj'
-PASSWD = sys.argv[2].strip()
+PASSWD = sys.argv[3].strip()
 conn_owner = {'dbname': DBNAME,
               'host': HOST,
               'port': PORT,
@@ -25,7 +25,7 @@ conn_str = f'postgresql://{OWNER}:{PASSWD}@{HOST}:{PORT}/{DBNAME}'
 
 IMG_PATH = Path('images')
 MODEL = 'gemma3:27b'
-LLM_HOST = 'http://137.184.163.121:11444'
+LLM_HOST = f'http://{sys.argv[1].strip()}:11444'
 
 
 j2d = lambda x: json.loads(x.split('```')[1][4:])
@@ -69,25 +69,28 @@ def interpret_process(llm, fn):
         
         resp = interpret_img(llm, fn_b64, PROMPT_04)
         resp = j2d(resp)
-        print(resp['cooking'])
+        print('cooking:', resp['cooking'])
 
         if resp['cooking']:
             resp = interpret_img(llm, fn_b64, PROMPT_05)
             resp = j2d(resp)
-            print(resp['style'])
-            style = resp['style']
-
-            resp = interpret_img(llm, fn_b64, PROMPT_06)
-            resp = j2d(resp)
             print(resp['ingredient'])
             ingredient = resp['ingredient']
 
-            resp = interpret_img(llm, fn_b64, PROMPT_07)
-            resp = j2d(resp)
-            print(resp['desc'])
-            desc = resp['desc']
+            if ingredient:
+                resp = interpret_img(llm, fn_b64, PROMPT_06)
+                resp = j2d(resp)
+                print(resp['style'])
+                style = resp['style']
+
+                resp = interpret_img(llm, fn_b64, PROMPT_07)
+                resp = j2d(resp)
+                print(resp['desc'])
+                desc = resp['desc']
+            else:
+                ingredient = style = desc = None
  
-            # write DB, IoT!proj2025s2
+            # write DB
             with pg.connect(conn_str) as conn:
                 with conn.cursor() as cur:
                     cur.execute(
@@ -113,13 +116,23 @@ if __name__ == "__main__":
                      base_url=LLM_HOST,
                      temperature=0.1)
     
+    with open('dskip.txt') as f:
+        dskip = f.readlines()
+    dskip = list(map(lambda x:x.strip(), dskip))
+    
     for folder in IMG_PATH.iterdir():
         if folder.is_dir():
+            if folder.name in dskip:
+                continue
+
             print('* in folder:', folder.name, end=', ') 
             fn = sorted([f for f in folder.rglob('*')])
             print(len(fn))
+
             if len(fn) != 0:
                 for _ in range(2):
-                    if interpret_process(llm, fn) is True:
+                    if interpret_process(llm, fn[-10:]) is True:
+                        with open('dskip.txt', 'a+') as f:
+                            f.write(folder.name+'\n')
                         break
 
