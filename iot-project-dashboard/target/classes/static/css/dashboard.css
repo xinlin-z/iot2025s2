@@ -1,0 +1,601 @@
+/* Dashboard Styles */
+
+body {
+    background: #f5f5f5;
+    min-height: 100vh;
+}
+
+.container {
+    background: transparent;
+}
+
+.stats-card {
+    border: none;
+    border-radius: 12px;
+    background: white;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.stats-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.stats-card h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.cooking-session-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+}
+
+.cooking-session-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-img-top-container {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    transform: rotate(180deg);
+}
+
+.cooking-session-card:hover .card-img-top {
+    transform: rotate(180deg) scale(1.05);
+}
+
+.card-img-overlay-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+}
+
+.card-img-overlay-badge .badge {
+    font-size: 0.75rem;
+    padding: 0.5em 0.75em;
+}
+
+.cooking-details {
+    font-size: 0.9rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.detail-item strong {
+    min-width: 90px;
+    font-weight: 600;
+}
+
+.detail-item i {
+    margin-top: 2px;
+    width: 16px;
+    text-align: center;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.h2 {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .detail-item {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .detail-item strong {
+        min-width: auto;
+    }
+}
+
+/* Custom color scheme */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+    --success-color: #27ae60;
+    --danger-color: #e74c3c;
+    --warning-color: #f39c12;
+    --info-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.btn-outline-primary {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Animation for page load */
+.cooking-session-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.cooking-session-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.cooking-session-card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Empty state styling */
+.py-5 {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+}
+
+.fa-3x {
+    font-size: 3em;
+}
+
+/* Card body improvements */
+.card-body {
+    padding: 1.5rem;
+}
+
+.cooking-session-card .card-title {
+    color: var(--secondary-color);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.3;
+}
+
+/* Ingredients text styling */
+.text-muted.small {
+    line-height: 1.4;
+    max-height: 3.6em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+/* Full Screen Modal */
+.session-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.session-modal:not(.show) {
+    pointer-events: none;
+}
+
+.session-modal.show {
+    opacity: 1;
+}
+
+.session-modal-content {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 1200px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.session-modal.show .session-modal-content {
+    transform: scale(1);
+}
+
+.session-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--primary-color);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.session-modal-close:hover {
+    background: var(--danger-color);
+    transform: rotate(90deg);
+}
+
+.modal-content-wrapper {
+    min-height: calc(90vh - 40px);
+    display: flex;
+}
+
+.modal-image-section {
+    position: sticky;
+    top: 0;
+    height: calc(90vh - 40px);
+    display: flex;
+    align-items: stretch;
+}
+
+.modal-session-image {
+    width: 100%;
+    height: calc(90vh - 40px);
+    object-fit: cover;
+    border-radius: 0 0 0 0px;
+    transform: rotate(180deg);
+    transition: opacity 0.5s ease-in-out;
+}
+
+.modal-session-image.fading {
+    opacity: 0.3;
+}
+
+.image-caption-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 50%, transparent 100%);
+    padding: 2rem 1.5rem 1.5rem;
+    pointer-events: none;
+}
+
+.image-caption-content {
+    color: white;
+    text-align: center;
+}
+
+.image-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin-bottom: 0.25rem;
+    letter-spacing: 1px;
+}
+
+.image-temperature {
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: rgba(231, 76, 60, 0.9);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.image-presence {
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.image-presence.present {
+    background: rgba(40, 167, 69, 0.9);
+}
+
+.image-presence.away {
+    background: rgba(108, 117, 125, 0.9);
+}
+
+.image-datetime {
+    font-size: 1rem;
+    font-weight: 500;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    opacity: 0.95;
+}
+
+.modal-details-section {
+    overflow-y: auto;
+    max-height: calc(90vh - 40px);
+}
+
+.modal-details-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-details-section::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.modal-details-section::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.modal-details-section::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+.modal-details-content {
+    padding: 2rem;
+}
+
+/* Modal specific styles */
+.session-modal .card-title {
+    color: var(--secondary-color);
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.session-modal .detail-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary-color);
+}
+
+.session-modal .detail-row.compact {
+    padding: 0.5rem;
+    margin-bottom: 0;
+    font-size: 0.85rem;
+}
+
+.session-modal .detail-row.small {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.5rem;
+    background: transparent;
+    border-left: none;
+}
+
+.session-modal .detail-row i {
+    font-size: 1.1rem;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.session-modal .detail-row.compact i {
+    font-size: 1rem;
+}
+
+.session-modal .detail-row strong {
+    display: block;
+    color: var(--secondary-color);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.15rem;
+}
+
+.session-modal .detail-row span {
+    color: #495057;
+    display: block;
+}
+
+.session-modal .detail-row .badge {
+    font-size: 0.85rem;
+}
+
+/* Image Gallery - Horizontal Scrolling */
+.image-gallery-horizontal {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.5rem 0;
+    scroll-behavior: smooth;
+}
+
+.image-gallery-horizontal::-webkit-scrollbar {
+    height: 6px;
+}
+
+.image-gallery-horizontal::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.image-gallery-horizontal::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 3px;
+}
+
+.image-gallery-horizontal::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+.gallery-item {
+    position: relative;
+    background: #f8f9fa;
+    border-radius: 8px;
+    overflow: visible;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    flex-shrink: 0;
+    width: 120px;
+}
+
+.gallery-tag {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-tag.start {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+}
+
+.gallery-tag.end {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+.gallery-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-item.active {
+    border: 3px solid var(--primary-color);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    transform: rotate(180deg);
+    display: block;
+}
+
+.gallery-caption {
+    padding: 0.25rem 0.5rem;
+    background: white;
+    font-size: 0.65rem;
+    color: #495057;
+    text-align: center;
+    border-top: 1px solid #dee2e6;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gallery-caption i {
+    color: var(--primary-color);
+    font-size: 0.6rem;
+}
+
+/* Temperature Chart */
+.temperature-chart-container {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+}
+
+#temperatureChart {
+    max-height: 300px;
+}
+
+/* Responsive adjustments for modal */
+@media (max-width: 768px) {
+    .session-modal .card-title {
+        font-size: 1.25rem;
+    }
+
+    .modal-content-wrapper {
+        flex-direction: column;
+    }
+
+    .modal-image-section {
+        position: relative;
+        max-height: 300px;
+    }
+
+    .modal-session-image {
+        height: 300px;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .modal-details-section {
+        max-height: calc(90vh - 340px);
+    }
+
+    .session-modal {
+        padding: 1rem;
+    }
+
+    .session-modal .detail-row.compact {
+        font-size: 0.8rem;
+    }
+
+    .gallery-item {
+        width: 100px;
+    }
+
+    .gallery-item img {
+        height: 60px;
+    }
+}
