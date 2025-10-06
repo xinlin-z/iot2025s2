@@ -30,3 +30,10 @@ possible.
 ## 3rd Setup
 
 3D print, laser cutting, get rid of the cardboard
+
+## DB Snapshot
+
+date: 07-10-2025
+
+in case for some unexpected disasters...
+
