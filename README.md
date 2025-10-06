@@ -27,4 +27,6 @@ date: 17-09-2025
 visit Vik's house, solve final issues, start collecting data as muas as
 possible. 
 
+## 3rd Setup
 
+3D print, laser cutting, get rid of the cardboard
