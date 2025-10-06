@@ -1,0 +1,13 @@
+com\iot\cookingmonitor\service\ImageScraperService.class
+com\iot\cookingmonitor\entity\Motion2.class
+com\iot\cookingmonitor\entity\Image2.class
+com\iot\cookingmonitor\repository\Image2Repository.class
+com\iot\cookingmonitor\entity\CookingSession.class
+com\iot\cookingmonitor\controller\DashboardController.class
+com\iot\cookingmonitor\controller\HomeController.class
+com\iot\cookingmonitor\config\SecurityConfig.class
+com\iot\cookingmonitor\repository\TemperatureRepository.class
+com\iot\cookingmonitor\repository\Motion2Repository.class
+com\iot\cookingmonitor\service\CookingSessionService.class
+com\iot\cookingmonitor\entity\Temperature.class
+com\iot\cookingmonitor\CookingMonitorApplication.class

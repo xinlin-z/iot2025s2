@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Cooking Monitor - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard">
+                <i class="fas fa-utensils me-2"></i>
+                IoT Cooking Monitor
+            </a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h2">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Cooking Events Dashboard
+                    </h1>
+                    <div class="text-muted">
+                        <i class="fas fa-calendar me-1"></i>
+                        Total Sessions: <span class="badge bg-primary" th:text="${#lists.size(cookingSessions)}">0</span>
+                    </div>
+                </div>
+
+                <div class="row" th:if="${cookingSessions != null and !cookingSessions.isEmpty()}">
+                    <div class="col-lg-4 col-md-6 mb-4" th:each="cookingSession : ${cookingSessions}">
+                        <div class="card cooking-session-card h-100 shadow-sm">
+                            <div class="card-img-top-container">
+                                <img class="card-img-top"
+                                     th:src="${sessionImageUrls[cookingSession.sessionNumber] != null ? sessionImageUrls[cookingSession.sessionNumber] : '/mimra_hq.jpg'}"
+                                     th:alt="${cookingSession.dishDescription}"
+                                     onerror="this.src='/mimra_hq.jpg'">
+                                <div class="card-img-overlay-badge">
+                                    <span class="badge bg-dark">
+                                        Session #<span th:text="${cookingSession.sessionNumber}">0</span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title" th:text="${cookingSession.dishDescription}">Dish Description</h5>
+
+                                <div class="cooking-details mb-3">
+                                    <div class="detail-item mb-2">
+                                        <i class="fas fa-clock text-primary me-2"></i>
+                                        <strong>Date & Time:</strong>
+                                        <span th:text="${#temporals.format(cookingSession.dateTime, 'MMM dd, yyyy - HH:mm')}">Date Time</span>
+                                    </div>
+
+                                    <div class="detail-item mb-2">
+                                        <i class="fas fa-fire text-danger me-2"></i>
+                                        <strong>Cooking Style:</strong>
+                                        <span class="badge bg-secondary" th:text="${cookingSession.cookingStyle}">Style</span>
+                                    </div>
+
+                                    <div class="detail-item mb-2">
+                                        <i class="fas fa-leaf text-success me-2"></i>
+                                        <strong>Ingredients:</strong>
+                                        <div class="d-flex flex-wrap gap-2 mt-2" th:with="ingredientsStr=${#strings.replace(#strings.replace(cookingSession.ingredients, '{', ''), '}', '')}">
+                                            <span class="badge rounded-pill bg-light text-dark border"
+                                                  th:each="ingredient : ${#strings.arraySplit(ingredientsStr, ',')}">
+                                                <span th:switch="${#strings.toLowerCase(#strings.trim(ingredient))}">
+                                                    <span th:case="'chicken'">🍗</span>
+                                                    <span th:case="'beef'">🥩</span>
+                                                    <span th:case="'pork'">🥓</span>
+                                                    <span th:case="'fish'">🐟</span>
+                                                    <span th:case="'shrimp'">🍤</span>
+                                                    <span th:case="'egg'">🥚</span>
+                                                    <span th:case="'eggs'">🥚</span>
+                                                    <span th:case="'rice'">🍚</span>
+                                                    <span th:case="'pasta'">🍝</span>
+                                                    <span th:case="'noodles'">🍜</span>
+                                                    <span th:case="'bread'">🍞</span>
+                                                    <span th:case="'cheese'">🧀</span>
+                                                    <span th:case="'milk'">🥛</span>
+                                                    <span th:case="'butter'">🧈</span>
+                                                    <span th:case="'tomato'">🍅</span>
+                                                    <span th:case="'tomatoes'">🍅</span>
+                                                    <span th:case="'potato'">🥔</span>
+                                                    <span th:case="'potatoes'">🥔</span>
+                                                    <span th:case="'carrot'">🥕</span>
+                                                    <span th:case="'carrots'">🥕</span>
+                                                    <span th:case="'onion'">🧅</span>
+                                                    <span th:case="'onions'">🧅</span>
+                                                    <span th:case="'garlic'">🧄</span>
+                                                    <span th:case="'pepper'">🌶️</span>
+                                                    <span th:case="'peppers'">🌶️</span>
+                                                    <span th:case="'broccoli'">🥦</span>
+                                                    <span th:case="'mushroom'">🍄</span>
+                                                    <span th:case="'mushrooms'">🍄</span>
+                                                    <span th:case="'corn'">🌽</span>
+                                                    <span th:case="'lemon'">🍋</span>
+                                                    <span th:case="'lime'">🍋</span>
+                                                    <span th:case="'avocado'">🥑</span>
+                                                    <span th:case="'cucumber'">🥒</span>
+                                                    <span th:case="'eggplant'">🍆</span>
+                                                    <span th:case="'lettuce'">🥬</span>
+                                                    <span th:case="'spinach'">🥬</span>
+                                                    <span th:case="'salt'">🧂</span>
+                                                    <span th:case="'oil'">🫒</span>
+                                                    <span th:case="'olive oil'">🫒</span>
+                                                    <span th:case="*">🥕</span>
+                                                </span>
+                                                <span th:text="${#strings.trim(ingredient)}">Ingredient</span>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-2" th:if="${cookingSession.durationMinutes != null or cookingSession.temperatureAvg != null}">
+                                        <div class="col-6" th:if="${cookingSession.durationMinutes != null}">
+                                            <small class="text-muted">
+                                                <i class="fas fa-stopwatch me-1"></i>
+                                                <span th:text="${cookingSession.durationMinutes}">0</span> min
+                                            </small>
+                                        </div>
+                                        <div class="col-6" th:if="${cookingSession.temperatureAvg != null}">
+                                            <small class="text-muted">
+                                                <i class="fas fa-thermometer-half me-1"></i>
+                                                <span th:text="${cookingSession.temperatureAvg}">0</span>°F
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-auto">
+                                    <button type="button"
+                                            class="btn btn-outline-primary btn-sm w-100"
+                                            th:attr="data-session='${cookingSession.sessionNumber}',
+                                                     data-dish='${cookingSession.dishDescription}',
+                                                     data-style='${cookingSession.cookingStyle}',
+                                                     data-duration='${cookingSession.durationMinutes}',
+                                                     data-temp='${cookingSession.temperatureAvg}',
+                                                     data-datetime='${#temporals.format(cookingSession.dateTime, \'EEEE, MMMM dd, yyyy - HH:mm:ss\')}',
+                                                     data-ingredients='${cookingSession.ingredients}',
+                                                     data-image='${sessionImageUrls[cookingSession.sessionNumber]}',
+                                                     data-created='${cookingSession.createdAt != null ? #temporals.format(cookingSession.createdAt, \'EEEE, MMMM dd, yyyy - HH:mm:ss\') : \'\'}',
+                                                     data-updated='${cookingSession.updatedAt != null ? #temporals.format(cookingSession.updatedAt, \'EEEE, MMMM dd, yyyy - HH:mm:ss\') : \'\'}'"
+                                            onclick="showSessionDetails(this)">
+                                        <i class="fas fa-eye me-1"></i>
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" th:if="${cookingSessions == null or cookingSessions.isEmpty()}">
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
+                            <h3 class="text-muted">No Cooking Sessions Found</h3>
+                            <p class="text-muted">Start cooking to see your sessions appear here!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Modal Card -->
+    <div id="sessionDetailsModal" class="session-modal">
+        <div class="session-modal-content">
+            <button class="session-modal-close" onclick="closeSessionDetails()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="card border-0">
+                <img id="modalImage" class="modal-session-image card-img-top" src="" alt="Session Image">
+
+                <div class="card-body">
+                    <h2 class="card-title">
+                        <i class="fas fa-utensils me-2"></i>
+                        <span id="modalDish">Dish Name</span>
+                    </h2>
+
+                    <div class="detail-row">
+                        <i class="fas fa-hashtag text-primary"></i>
+                        <strong>Session Number:</strong>
+                        <span id="modalSessionNumber">0</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <i class="fas fa-fire text-danger"></i>
+                        <strong>Cooking Style:</strong>
+                        <span id="modalStyle">Style</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <i class="fas fa-clock text-primary"></i>
+                        <strong>Date & Time:</strong>
+                        <span id="modalDateTime">Date Time</span>
+                    </div>
+
+                    <div class="detail-row" id="modalDurationRow">
+                        <i class="fas fa-stopwatch text-info"></i>
+                        <strong>Duration:</strong>
+                        <span id="modalDuration">0</span> minutes
+                    </div>
+
+                    <div class="detail-row" id="modalTempRow">
+                        <i class="fas fa-thermometer-half text-warning"></i>
+                        <strong>Average Temperature:</strong>
+                        <span id="modalTemp">0</span>°F
+                    </div>
+
+                    <div class="detail-row">
+                        <i class="fas fa-leaf text-success"></i>
+                        <strong>Ingredients:</strong>
+                        <div id="modalIngredients" class="d-flex flex-wrap gap-2 mt-2 ms-0">
+                        </div>
+                    </div>
+
+                    <hr class="my-3">
+
+                    <div class="detail-row" id="modalCreatedRow">
+                        <i class="fas fa-calendar-plus text-secondary"></i>
+                        <strong>Created At:</strong>
+                        <span id="modalCreated">Date Time</span>
+                    </div>
+
+                    <div class="detail-row" id="modalUpdatedRow">
+                        <i class="fas fa-calendar-check text-secondary"></i>
+                        <strong>Last Updated:</strong>
+                        <span id="modalUpdated">Date Time</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function getIngredientEmoji(ingredient) {
+            const lower = ingredient.toLowerCase().trim();
+            const emojiMap = {
+                'chicken': '🍗', 'beef': '🥩', 'pork': '🥓', 'fish': '🐟', 'shrimp': '🍤',
+                'egg': '🥚', 'eggs': '🥚', 'rice': '🍚', 'pasta': '🍝', 'noodles': '🍜',
+                'bread': '🍞', 'cheese': '🧀', 'milk': '🥛', 'butter': '🧈',
+                'tomato': '🍅', 'tomatoes': '🍅', 'potato': '🥔', 'potatoes': '🥔',
+                'carrot': '🥕', 'carrots': '🥕', 'onion': '🧅', 'onions': '🧅',
+                'garlic': '🧄', 'pepper': '🌶️', 'peppers': '🌶️', 'broccoli': '🥦',
+                'mushroom': '🍄', 'mushrooms': '🍄', 'corn': '🌽', 'lemon': '🍋',
+                'lime': '🍋', 'avocado': '🥑', 'cucumber': '🥒', 'eggplant': '🍆',
+                'lettuce': '🥬', 'spinach': '🥬', 'salt': '🧂', 'oil': '🫒', 'olive oil': '🫒'
+            };
+            return emojiMap[lower] || '🥕';
+        }
+
+        function showSessionDetails(button) {
+            const modal = document.getElementById('sessionDetailsModal');
+            const sessionNumber = button.getAttribute('data-session');
+            const dish = button.getAttribute('data-dish');
+            const style = button.getAttribute('data-style');
+            const duration = button.getAttribute('data-duration');
+            const temp = button.getAttribute('data-temp');
+            const dateTime = button.getAttribute('data-datetime');
+            const ingredients = button.getAttribute('data-ingredients');
+            const imageUrl = button.getAttribute('data-image');
+            const created = button.getAttribute('data-created');
+            const updated = button.getAttribute('data-updated');
+
+            // Set modal content
+            document.getElementById('modalSessionNumber').textContent = sessionNumber;
+            document.getElementById('modalDish').textContent = dish;
+            document.getElementById('modalStyle').textContent = style;
+            document.getElementById('modalDateTime').textContent = dateTime;
+
+            // Set image
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = imageUrl || '/mimra_hq.jpg';
+            modalImage.onerror = function() { this.src = '/mimra_hq.jpg'; };
+
+            // Handle optional fields
+            const durationRow = document.getElementById('modalDurationRow');
+            const tempRow = document.getElementById('modalTempRow');
+            const createdRow = document.getElementById('modalCreatedRow');
+            const updatedRow = document.getElementById('modalUpdatedRow');
+
+            if (duration && duration !== 'null') {
+                document.getElementById('modalDuration').textContent = duration;
+                durationRow.style.display = 'flex';
+            } else {
+                durationRow.style.display = 'none';
+            }
+
+            if (temp && temp !== 'null') {
+                document.getElementById('modalTemp').textContent = temp;
+                tempRow.style.display = 'flex';
+            } else {
+                tempRow.style.display = 'none';
+            }
+
+            if (created && created !== 'null' && created !== '') {
+                document.getElementById('modalCreated').textContent = created;
+                createdRow.style.display = 'flex';
+            } else {
+                createdRow.style.display = 'none';
+            }
+
+            if (updated && updated !== 'null' && updated !== '') {
+                document.getElementById('modalUpdated').textContent = updated;
+                updatedRow.style.display = 'flex';
+            } else {
+                updatedRow.style.display = 'none';
+            }
+
+            // Parse and display ingredients
+            const ingredientsContainer = document.getElementById('modalIngredients');
+            ingredientsContainer.innerHTML = '';
+
+            if (ingredients) {
+                const cleanIngredients = ingredients.replace(/[{}]/g, '');
+                const ingredientList = cleanIngredients.split(',');
+
+                ingredientList.forEach(ingredient => {
+                    const trimmed = ingredient.trim();
+                    if (trimmed) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge rounded-pill bg-light text-dark border px-3 py-2';
+                        badge.innerHTML = getIngredientEmoji(trimmed) + ' ' + trimmed;
+                        ingredientsContainer.appendChild(badge);
+                    }
+                });
+            }
+
+            // Show modal
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeSessionDetails() {
+            const modal = document.getElementById('sessionDetailsModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSessionDetails();
+            }
+        });
+
+        // Close modal on background click
+        document.getElementById('sessionDetailsModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeSessionDetails();
+            }
+        });
+    </script>
+</body>
+</html>
