@@ -1,8 +1,10 @@
+com\iot\cookingmonitor\controller\SessionsController.class
 com\iot\cookingmonitor\service\ImageScraperService.class
 com\iot\cookingmonitor\entity\Motion2.class
 com\iot\cookingmonitor\entity\Image2.class
 com\iot\cookingmonitor\repository\Image2Repository.class
 com\iot\cookingmonitor\entity\CookingSession.class
+com\iot\cookingmonitor\controller\AboutController.class
 com\iot\cookingmonitor\controller\DashboardController.class
 com\iot\cookingmonitor\controller\HomeController.class
 com\iot\cookingmonitor\config\SecurityConfig.class
