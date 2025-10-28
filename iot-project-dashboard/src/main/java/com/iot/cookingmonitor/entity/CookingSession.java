@@ -41,6 +41,9 @@ public class CookingSession {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Transient
+    private String imageUrl;
+
     // Constructors
     public CookingSession() {
         this.createdAt = LocalDateTime.now();
@@ -145,6 +148,14 @@ public class CookingSession {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @PreUpdate

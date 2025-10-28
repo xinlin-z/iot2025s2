@@ -3,336 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IoT Cooking Monitor - Dashboard</title>
+    <title>Smart Cooking - Dashboard Overview</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="/dashboard">
-                <i class="fas fa-utensils me-2"></i>
-                IoT Cooking Monitor
-            </a>
-            <span class="navbar-text text-white">
-                Team XCV: Caleb Joseph, Toan Thang Vu, Xinlin Zhang
-            </span>
-        </div>
-    </nav>
-
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-12">
-                <h1 class="h2 mb-4">
-                    <i class="fas fa-chart-line me-2"></i>
-                    Cooking Events Dashboard
-                </h1>
-
-                <!-- Statistics Card -->
-                <div class="card stats-card shadow-sm mb-4" th:if="${cookingSessions != null and !cookingSessions.isEmpty()}">
-                    <div class="card-body">
-                        <div class="row text-center">
-                            <div class="col-md-4 mb-3 mb-md-0">
-                                <i class="fas fa-calendar-alt fa-2x text-primary mb-2"></i>
-                                <h3 class="mb-1" th:text="${totalSessions}">0</h3>
-                                <p class="text-muted mb-0">Total Sessions</p>
-                            </div>
-                            <div class="col-md-4 mb-3 mb-md-0 border-start border-end">
-                                <i class="fas fa-fire fa-2x text-danger mb-2"></i>
-                                <h3 class="mb-1" th:text="${#lists.size(allCookingStyles)}">0</h3>
-                                <p class="text-muted mb-2">Cooking Styles</p>
-                                <div class="d-flex flex-wrap gap-2 justify-content-center">
-                                    <span class="badge bg-secondary" th:each="style : ${allCookingStyles}" th:text="${style}">Style</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <i class="fas fa-leaf fa-2x text-success mb-2"></i>
-                                <h3 class="mb-1" th:text="${#lists.size(allIngredients)}">0</h3>
-                                <p class="text-muted mb-2">Unique Ingredients</p>
-                                <div class="d-flex flex-wrap gap-2 justify-content-center" style="max-height: 100px; overflow-y: auto;">
-                                    <span class="badge rounded-pill bg-light text-dark border" th:each="ingredient : ${allIngredients}" th:text="${ingredient}">Ingredient</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row" th:if="${cookingSessions != null and !cookingSessions.isEmpty()}">
-                    <div class="col-lg-4 col-md-6 mb-4" th:each="cookingSession : ${cookingSessions}">
-                        <div class="card cooking-session-card h-100 shadow-sm">
-                            <div class="card-img-top-container">
-                                <img class="card-img-top"
-                                     th:src="${sessionImageUrls[cookingSession.sessionNumber] != null ? sessionImageUrls[cookingSession.sessionNumber] : '/mimra_hq.jpg'}"
-                                     th:alt="${cookingSession.dishDescription}"
-                                     onerror="this.src='/mimra_hq.jpg'">
-                                <div class="card-img-overlay-badge">
-                                    <span class="badge bg-dark">
-                                        Session #<span th:text="${cookingSession.sessionNumber}">0</span>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title" th:text="${cookingSession.dishDescription}">Dish Description</h5>
-
-                                <div class="cooking-details mb-3">
-                                    <div class="detail-item mb-2">
-                                        <i class="fas fa-clock text-primary me-2"></i>
-                                        <strong>Date & Time:</strong>
-                                        <span th:text="${#temporals.format(cookingSession.dateTime, 'MMM dd, yyyy - HH:mm')}">Date Time</span>
-                                    </div>
-
-                                    <div class="detail-item mb-2">
-                                        <i class="fas fa-fire text-danger me-2"></i>
-                                        <strong>Cooking Style:</strong>
-                                        <span class="badge bg-secondary" th:text="${cookingSession.cookingStyle}">Style</span>
-                                    </div>
-
-                                    <div class="detail-item mb-2">
-                                        <i class="fas fa-leaf text-success me-2"></i>
-                                        <strong>Ingredients:</strong>
-                                        <div class="d-flex flex-wrap gap-2 mt-2" th:with="ingredientsStr=${#strings.replace(#strings.replace(cookingSession.ingredients, '{', ''), '}', '')}">
-                                            <span class="badge rounded-pill bg-light text-dark border"
-                                                  th:each="ingredient : ${#strings.arraySplit(ingredientsStr, ',')}">
-                                                <span th:switch="${#strings.toLowerCase(#strings.trim(ingredient))}">
-                                                    <span th:case="'chicken'">🍗</span>
-                                                    <span th:case="'beef'">🥩</span>
-                                                    <span th:case="'pork'">🥓</span>
-                                                    <span th:case="'fish'">🐟</span>
-                                                    <span th:case="'shrimp'">🍤</span>
-                                                    <span th:case="'egg'">🥚</span>
-                                                    <span th:case="'eggs'">🥚</span>
-                                                    <span th:case="'rice'">🍚</span>
-                                                    <span th:case="'pasta'">🍝</span>
-                                                    <span th:case="'noodles'">🍜</span>
-                                                    <span th:case="'bread'">🍞</span>
-                                                    <span th:case="'cheese'">🧀</span>
-                                                    <span th:case="'milk'">🥛</span>
-                                                    <span th:case="'butter'">🧈</span>
-                                                    <span th:case="'tomato'">🍅</span>
-                                                    <span th:case="'tomatoes'">🍅</span>
-                                                    <span th:case="'potato'">🥔</span>
-                                                    <span th:case="'potatoes'">🥔</span>
-                                                    <span th:case="'carrot'">🥕</span>
-                                                    <span th:case="'carrots'">🥕</span>
-                                                    <span th:case="'onion'">🧅</span>
-                                                    <span th:case="'onions'">🧅</span>
-                                                    <span th:case="'garlic'">🧄</span>
-                                                    <span th:case="'pepper'">🌶️</span>
-                                                    <span th:case="'peppers'">🌶️</span>
-                                                    <span th:case="'broccoli'">🥦</span>
-                                                    <span th:case="'mushroom'">🍄</span>
-                                                    <span th:case="'mushrooms'">🍄</span>
-                                                    <span th:case="'corn'">🌽</span>
-                                                    <span th:case="'lemon'">🍋</span>
-                                                    <span th:case="'lime'">🍋</span>
-                                                    <span th:case="'avocado'">🥑</span>
-                                                    <span th:case="'cucumber'">🥒</span>
-                                                    <span th:case="'eggplant'">🍆</span>
-                                                    <span th:case="'lettuce'">🥬</span>
-                                                    <span th:case="'spinach'">🥬</span>
-                                                    <span th:case="'salt'">🧂</span>
-                                                    <span th:case="'oil'">🫒</span>
-                                                    <span th:case="'olive oil'">🫒</span>
-                                                    <span th:case="*">🥕</span>
-                                                </span>
-                                                <span th:text="${#strings.trim(ingredient)}">Ingredient</span>
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mt-2" th:if="${cookingSession.durationMinutes != null or cookingSession.temperatureAvg != null}">
-                                        <div class="col-6" th:if="${cookingSession.durationMinutes != null}">
-                                            <small class="text-muted">
-                                                <i class="fas fa-stopwatch me-1"></i>
-                                                <span th:text="${cookingSession.durationMinutes}">0</span> min
-                                            </small>
-                                        </div>
-                                        <div class="col-6" th:if="${cookingSession.temperatureAvg != null}">
-                                            <small class="text-muted">
-                                                <i class="fas fa-thermometer-half me-1"></i>
-                                                <span th:text="${cookingSession.temperatureAvg}">0</span>°C
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mt-auto">
-                                    <button type="button"
-                                            class="btn btn-outline-primary btn-sm w-100"
-                                            th:data-session="${cookingSession.sessionNumber}"
-                                            th:data-dish="${cookingSession.dishDescription}"
-                                            th:data-style="${cookingSession.cookingStyle}"
-                                            th:data-duration="${cookingSession.durationMinutes}"
-                                            th:data-temp="${cookingSession.temperatureAvg}"
-                                            th:data-datetime="${#temporals.format(cookingSession.dateTime, 'EEEE, MMMM dd, yyyy - HH:mm:ss')}"
-                                            th:data-ingredients="${cookingSession.ingredients}"
-                                            th:data-image="${sessionImageUrls[cookingSession.sessionNumber]}"
-                                            th:data-all-images="${#strings.listJoin(sessionAllImageUrls[cookingSession.sessionNumber], '|')}"
-                                            th:data-created="${cookingSession.createdAt != null ? #temporals.format(cookingSession.createdAt, 'EEEE, MMMM dd, yyyy - HH:mm:ss') : ''}"
-                                            th:data-updated="${cookingSession.updatedAt != null ? #temporals.format(cookingSession.updatedAt, 'EEEE, MMMM dd, yyyy - HH:mm:ss') : ''}"
-                                            onclick="showSessionDetails(this)">
-                                        <i class="fas fa-eye me-1"></i>
-                                        View Details
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row" th:if="${cookingSessions == null or cookingSessions.isEmpty()}">
-                    <div class="col-12">
-                        <div class="text-center py-5">
-                            <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
-                            <h3 class="text-muted">No Cooking Sessions Found</h3>
-                            <p class="text-muted">Start cooking to see your sessions appear here!</p>
-                        </div>
-                    </div>
-                </div>
+    <div class="dashboard-layout">
+        <!-- Side Menu -->
+        <aside class="sidebar-nav">
+            <div class="sidebar-header">
+                <i class="fas fa-utensils"></i>
+                <h1>Smart Cooking</h1>
+                <p class="sidebar-team">Team XCV</p>
             </div>
-        </div>
-    </div>
+            <nav class="sidebar-nav-menu">
+                <a class="sidebar-nav-item sidebar-nav-item-active" href="/dashboard">
+                    <i class="fas fa-tachometer-alt sidebar-nav-icon"></i>
+                    <span class="sidebar-nav-text">Dashboard</span>
+                </a>
+                <a class="sidebar-nav-item" href="/sessions">
+                    <i class="fas fa-fire sidebar-nav-icon"></i>
+                    <span class="sidebar-nav-text">Cooking Sessions</span>
+                </a>
+                <a class="sidebar-nav-item" href="/about">
+                    <i class="fas fa-info-circle sidebar-nav-icon"></i>
+                    <span class="sidebar-nav-text">About Us</span>
+                </a>
+            </nav>
+        </aside>
 
-    <!-- Details Modal Card -->
-    <div id="sessionDetailsModal" class="session-modal">
-        <div class="session-modal-content">
-            <button class="session-modal-close" onclick="closeSessionDetails()">
-                <i class="fas fa-times"></i>
-            </button>
+        <!-- Main Content -->
+        <div class="dashboard-main-content">
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="h2 mb-4">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Dashboard Overview
+                        </h1>
 
-            <div class="card border-0">
-                <div class="row g-0 modal-content-wrapper">
-                    <div class="col-md-5 modal-image-section">
-                        <div class="position-relative h-100">
-                            <img id="modalImage" class="modal-session-image" src="" alt="Session Image">
-                            <div class="image-caption-overlay">
-                                <div class="image-caption-content">
-                                    <div class="image-number" id="imageNumber">1 / 10</div>
-                                    <div class="d-flex justify-content-center gap-2 mb-2">
-                                        <div class="image-temperature" id="imageTemperature">Loading...</div>
-                                        <div class="image-presence" id="imagePresence">Loading...</div>
+                        <!-- Statistics Cards - Separated Columns -->
+                        <div class="row mb-4" th:if="${totalSessions != null and totalSessions > 0}">
+                            <!-- Total Sessions Card -->
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <div class="overview-stat-card shadow-sm h-100">
+                                    <div class="overview-stat-icon-wrapper bg-primary-light">
+                                        <i class="fas fa-calendar-alt overview-stat-icon text-primary"></i>
                                     </div>
-                                    <div class="image-datetime" id="imageDateTime">2025-09-28 20:40:54</div>
+                                    <div class="overview-stat-content">
+                                        <h2 class="overview-stat-number" th:text="${totalSessions}">0</h2>
+                                        <p class="overview-stat-label">Total Sessions</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cooking Styles Card -->
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <div class="overview-stat-card shadow-sm h-100">
+                                    <div class="overview-stat-icon-wrapper bg-danger-light">
+                                        <i class="fas fa-fire overview-stat-icon text-danger"></i>
+                                    </div>
+                                    <div class="overview-stat-content">
+                                        <h2 class="overview-stat-number" th:text="${#lists.size(allCookingStyles)}">0</h2>
+                                        <p class="overview-stat-label mb-2">Cooking Styles</p>
+                                        <div class="overview-badge-container">
+                                            <span class="badge bg-secondary me-1 mb-1" th:each="style : ${allCookingStyles}" th:text="${style}">Style</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Unique Ingredients Card -->
+                            <div class="col-lg-4 col-md-6 mb-3">
+                                <div class="overview-stat-card shadow-sm h-100">
+                                    <div class="overview-stat-icon-wrapper bg-success-light">
+                                        <i class="fas fa-leaf overview-stat-icon text-success"></i>
+                                    </div>
+                                    <div class="overview-stat-content">
+                                        <h2 class="overview-stat-number" th:text="${#lists.size(allIngredients)}">0</h2>
+                                        <p class="overview-stat-label mb-2">Unique Ingredients</p>
+                                        <div class="overview-badge-container scrollable">
+                                            <span class="badge rounded-pill bg-light text-dark border me-1 mb-1" th:each="ingredient : ${allIngredients}" th:text="${ingredient}">Ingredient</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-7 modal-details-section">
-                        <div class="card-body">
-                            <h2 class="card-title mb-2">
-                                <i class="fas fa-utensils me-2"></i>
-                                <span class="badge bg-primary me-2" id="modalSessionNumberBadge">#0</span>
-                                <span id="modalDish">Dish Name</span>
-                            </h2>
 
-                            <!-- Cooking Time, Style, and Ingredients -->
-                            <div class="mb-3">
-                                <div class="text-muted small mb-2">
-                                    <i class="fas fa-clock me-1"></i>
-                                    <span id="modalDateTime">Date Time</span>
-                                </div>
-                                <div class="d-flex gap-3 flex-wrap align-items-center">
-                                    <div>
-                                        <span class="badge bg-secondary" id="modalStyleBadge">Style</span>
-                                    </div>
-                                    <div id="modalIngredientsInline" class="d-flex flex-wrap gap-2">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Image Gallery Section -->
-                            <div class="mb-3">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h6 class="mb-0 text-muted">
-                                        <i class="fas fa-images me-1"></i>
-                                        Gallery
-                                    </h6>
-                                    <button id="autoplayButton" class="btn btn-sm btn-outline-primary" onclick="toggleAutoplay()">
-                                        <i class="fas fa-play me-1"></i>
-                                        <span id="autoplayText">Play</span>
-                                    </button>
-                                </div>
-                                <div id="imageGallery" class="image-gallery-horizontal">
-                                    <!-- Images will be populated here by JavaScript -->
-                                </div>
-                            </div>
-
-                            <div class="row g-2">
-                                <div class="col-6" id="modalDurationRow">
-                                    <div class="detail-row compact">
-                                        <i class="fas fa-stopwatch text-info"></i>
-                                        <div>
-                                            <strong>Duration</strong>
-                                            <span id="modalDuration">0</span> min
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-6" id="modalTempRow">
-                                    <div class="detail-row compact">
-                                        <i class="fas fa-thermometer-half text-warning"></i>
-                                        <div>
-                                            <strong>Temp</strong>
-                                            <span id="modalTemp">0</span>°C
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Temperature Graph -->
-                            <div class="mt-4">
-                                <h6 class="mb-3">
-                                    <i class="fas fa-chart-line me-2"></i>
-                                    Temperature Timeline
-                                </h6>
-                                <div class="temperature-chart-container">
-                                    <canvas id="temperatureChart"></canvas>
-                                </div>
-                            </div>
-
-                            <!-- Cook Presence Timeline -->
-                            <div class="mt-4">
-                                <h6 class="mb-3">
-                                    <i class="fas fa-user-clock me-2"></i>
-                                    Cook Presence Timeline
-                                </h6>
-                                <div class="row mb-3">
-                                    <div class="col-6">
-                                        <div class="p-2 bg-light rounded d-flex align-items-center gap-2">
-                                            <canvas id="presencePieChart" width="50" height="50" style="flex-shrink: 0;"></canvas>
-                                            <div class="flex-grow-1 text-center">
-                                                <small class="text-muted d-block">Presence</small>
-                                                <strong id="presencePercentage" class="text-info fs-5">
-                                                    <i class="fas fa-spinner fa-spin"></i>
-                                                </strong>
+                        <!-- Cooking Activity Timeline -->
+                        <div class="row mb-4" th:if="${totalSessions != null and totalSessions > 0}">
+                            <div class="col-12">
+                                <div class="card shadow-sm">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">
+                                            <i class="fas fa-history me-2"></i>
+                                            Cooking Activity Timeline
+                                        </h5>
+                                        <div class="cooking-timeline-container">
+                                            <div class="cooking-timeline">
+                                                <div class="timeline-line"></div>
+                                                <div th:each="monthEntry, monthStat : ${sessionsByMonth}" class="timeline-month-group">
+                                                    <div class="timeline-month-header" th:classappend="${monthStat.index % 2 == 0} ? 'timeline-month-even' : 'timeline-month-odd'">
+                                                        <span th:text="${monthEntry.key}">Month Year</span>
+                                                        <span class="timeline-month-count" th:text="${'(' + #lists.size(monthEntry.value) + ')'}">(0)</span>
+                                                    </div>
+                                                    <div class="timeline-month-sessions">
+                                                        <div th:each="cookingSession : ${monthEntry.value}" class="timeline-items">
+                                                            <a th:href="@{/sessions(sessionNumber=${cookingSession.sessionNumber})}"
+                                                               th:class="${(sessionIndexMap.get(cookingSession) % 2 == 0) ? 'timeline-item timeline-item-top' : 'timeline-item timeline-item-bottom'}"
+                                                               th:title="${cookingSession.dishDescription}">
+                                                                <div class="timeline-dot"
+                                                                     th:classappend="${monthStat.index % 2 == 0} ? 'timeline-dot-even' : 'timeline-dot-odd'">
+                                                                    <i class="fas fa-utensils"></i>
+                                                                </div>
+                                                                <div class="timeline-content"
+                                                                     th:attr="data-image-url=${cookingSession.imageUrl}"
+                                                                     th:classappend="${monthStat.index % 2 == 0} ? 'timeline-content-even' : 'timeline-content-odd'">
+                                                                    <div class="timeline-session-number"
+                                                                         th:classappend="${monthStat.index % 2 == 0} ? 'timeline-session-number-even' : 'timeline-session-number-odd'">
+                                                                        <span th:text="${cookingSession.sessionNumber}">Session</span>
+                                                                    </div>
+                                                                    <div class="timeline-ingredients" th:attr="data-ingredients=${cookingSession.ingredients}">
+                                                                        <!-- Ingredients will be populated by JavaScript -->
+                                                                    </div>
+                                                                    <div class="timeline-datetime-compact">
+                                                                        <span th:text="${#temporals.format(cookingSession.dateTime, 'MMM dd')}">Date</span>
+                                                                    </div>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="text-center p-2 bg-light rounded">
-                                            <small class="text-muted d-block">Present / Away</small>
-                                            <strong id="presenceStats" class="fs-6">-</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Charts Section -->
+                        <div class="row" th:if="${totalSessions != null and totalSessions > 0}">
+                            <!-- Cooking Styles Chart -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">
+                                            <i class="fas fa-fire text-danger me-2"></i>
+                                            Most Used Cooking Styles
+                                        </h5>
+                                        <div class="chart-container">
+                                            <canvas id="cookingStylesChart"></canvas>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="presence-timeline-container" style="min-height: 120px; background: #f8f9fa; border-radius: 8px; padding: 30px 10px 30px 10px; position: relative;">
-                                    <div style="position: relative; height: 80px;">
-                                        <div id="presenceTimeline" style="position: absolute; top: 40px; left: 0; right: 0; height: 4px; background: #dee2e6; border-radius: 2px;">
-                                            <!-- Timeline dots and segments will be added here by JavaScript -->
-                                        </div>
-                                        <div id="timelineLabelsTop" style="position: absolute; top: 0; left: 0; right: 0; height: 35px;">
-                                            <!-- Top time labels will be added here by JavaScript -->
-                                        </div>
-                                        <div id="timelineLabelsBottom" style="position: absolute; top: 48px; left: 0; right: 0; height: 35px;">
-                                            <!-- Bottom time labels will be added here by JavaScript -->
+                            </div>
+
+                            <!-- Ingredients Chart -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">
+                                            <i class="fas fa-leaf text-success me-2"></i>
+                                            Most Used Ingredients
+                                        </h5>
+                                        <div class="chart-container">
+                                            <canvas id="ingredientsChart"></canvas>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-center gap-3 mt-2" style="font-size: 0.85rem;">
-                                    <span><i class="fas fa-square" style="color: #28a745;"></i> Present</span>
-                                    <span><i class="fas fa-square" style="color: #dc3545;"></i> Away</span>
+                            </div>
+                        </div>
+
+                        <div class="row" th:if="${totalSessions == null or totalSessions == 0}">
+                            <div class="col-12">
+                                <div class="text-center py-5">
+                                    <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                                    <h3 class="text-muted">No Data Available</h3>
+                                    <p class="text-muted">Start cooking to see your statistics here!</p>
                                 </div>
                             </div>
                         </div>
@@ -344,702 +192,206 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
-    <script>
-        let autoplayInterval = null;
-        let currentAutoplayIndex = 0;
-        let galleryImages = [];
-        let temperatureChart = null;
-        let presencePieChart = null;
-        let currentSessionNumber = null;
-        let temperatureData = [];
-
-        function toggleAutoplay() {
-            const button = document.getElementById('autoplayButton');
-            const buttonText = document.getElementById('autoplayText');
-            const buttonIcon = button.querySelector('i');
-
-            if (autoplayInterval) {
-                // Stop autoplay
-                clearInterval(autoplayInterval);
-                autoplayInterval = null;
-                buttonText.textContent = 'Play';
-                buttonIcon.className = 'fas fa-play me-1';
-                button.classList.remove('btn-danger');
-                button.classList.add('btn-outline-primary');
-            } else {
-                // Start autoplay
-                if (galleryImages.length > 0) {
-                    buttonText.textContent = 'Stop';
-                    buttonIcon.className = 'fas fa-stop me-1';
-                    button.classList.remove('btn-outline-primary');
-                    button.classList.add('btn-danger');
-
-                    // Start autoplay from current image
-                    autoplayInterval = setInterval(advanceSlideshow, 2000);
-                }
-            }
-        }
-
-        async function updateTemperatureHighlight(datetime) {
-            if (!currentSessionNumber || !temperatureChart) return;
-
-            try {
-                // Fetch temperature data
-                const tempResponse = await fetch(`/dashboard/api/temperature/${currentSessionNumber}/closest?datetime=${datetime}`);
-                const tempData = await tempResponse.json();
-
-                if (tempData.error) {
-                    console.error('Error getting temperature:', tempData.error);
-                    document.getElementById('imageTemperature').textContent = 'N/A';
-                } else {
-                    // Update chart to highlight the closest temperature point
-                    const index = tempData.index;
-
-                    // Reset all point radii
-                    temperatureChart.data.datasets[0].pointRadius = temperatureData.map(() => 3);
-                    temperatureChart.data.datasets[0].pointHoverRadius = temperatureData.map(() => 6);
-
-                    // Highlight the selected point
-                    if (index !== undefined && index >= 0) {
-                        temperatureChart.data.datasets[0].pointRadius[index] = 8;
-                        temperatureChart.data.datasets[0].pointHoverRadius[index] = 10;
-                        temperatureChart.data.datasets[0].pointBackgroundColor = temperatureData.map((_, i) =>
-                            i === index ? 'rgb(255, 193, 7)' : 'rgb(231, 76, 60)'
-                        );
-                    }
-
-                    // Update temperature display on image
-                    const tempElement = document.getElementById('imageTemperature');
-                    if (tempElement && tempData.value !== undefined) {
-                        tempElement.innerHTML = `<i class="fas fa-thermometer-half me-1"></i>${tempData.value.toFixed(1)}°C`;
-                    }
-
-                    temperatureChart.update();
-                }
-
-                // Fetch presence/motion data
-                const motionResponse = await fetch(`/dashboard/api/motion/${currentSessionNumber}/closest?datetime=${datetime}`);
-                const motionData = await motionResponse.json();
-
-                const presenceElement = document.getElementById('imagePresence');
-                if (motionData.error) {
-                    console.error('Error getting motion:', motionData.error);
-                    presenceElement.textContent = 'N/A';
-                    presenceElement.className = 'image-presence';
-                } else {
-                    const isPresent = motionData.value;
-                    presenceElement.innerHTML = `<i class="fas fa-user${isPresent ? '' : '-slash'} me-1"></i>${isPresent ? 'Present' : 'Away'}`;
-                    presenceElement.className = `image-presence ${isPresent ? 'present' : 'away'}`;
-                }
-            } catch (error) {
-                console.error('Error updating data:', error);
-                document.getElementById('imageTemperature').textContent = 'Error';
-                document.getElementById('imagePresence').textContent = 'Error';
-            }
-        }
-
-        function updateImageCaption(index) {
-            const imageNumberElement = document.getElementById('imageNumber');
-            const imageDateTimeElement = document.getElementById('imageDateTime');
-
-            if (galleryImages.length > 0) {
-                const currentUrl = galleryImages[index];
-                const filename = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
-                const datetime = parseDateTimeFromFilename(filename);
-
-                imageNumberElement.textContent = `${index + 1} / ${galleryImages.length}`;
-                imageDateTimeElement.textContent = datetime;
-
-                // Update temperature highlight
-                const isoDatetime = datetime.replace(' ', 'T');
-                updateTemperatureHighlight(isoDatetime);
-            }
-        }
-
-        function advanceSlideshow() {
-            if (galleryImages.length === 0) {
-                toggleAutoplay(); // Stop if no images
-                return;
-            }
-
-            const modalImage = document.getElementById('modalImage');
-            const galleryItems = document.querySelectorAll('.gallery-item');
-
-            // Add fade effect
-            modalImage.classList.add('fading');
-
-            setTimeout(() => {
-                // Move to next image
-                currentAutoplayIndex = (currentAutoplayIndex + 1) % galleryImages.length;
-                const nextImageUrl = galleryImages[currentAutoplayIndex];
-
-                // Update main image
-                modalImage.src = nextImageUrl;
-
-                // Update caption
-                updateImageCaption(currentAutoplayIndex);
-
-                // Update active gallery item
-                galleryItems.forEach((item, index) => {
-                    item.classList.toggle('active', index === currentAutoplayIndex);
-                });
-
-                // Remove fade effect
-                modalImage.classList.remove('fading');
-
-                // Scroll gallery to show active item
-                const activeItem = galleryItems[currentAutoplayIndex];
-                if (activeItem) {
-                    activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                }
-            }, 250);
-        }
-
-        async function loadTemperatureChart(sessionNumber) {
-            try {
-                const response = await fetch(`/dashboard/api/temperature/${sessionNumber}`);
-                const data = await response.json();
-
-                // Store temperature data globally
-                temperatureData = data;
-
-                // Destroy existing chart if it exists
-                if (temperatureChart) {
-                    temperatureChart.destroy();
-                }
-
-                const ctx = document.getElementById('temperatureChart');
-
-                if (data.length === 0) {
-                    ctx.parentElement.innerHTML = '<p class="text-muted text-center">No temperature data available</p>';
-                    document.getElementById('imageTemperature').textContent = 'N/A';
-                    return;
-                }
-
-                // Prepare data for chart
-                const labels = data.map(item => {
-                    const date = new Date(item.datetime);
-                    return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-                });
-                const temperatures = data.map(item => item.value);
-
-                temperatureChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Temperature (°C)',
-                            data: temperatures,
-                            borderColor: 'rgb(231, 76, 60)',
-                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: 3,
-                            pointHoverRadius: 6,
-                            pointBackgroundColor: 'rgb(231, 76, 60)',
-                            pointBorderColor: '#fff',
-                            pointBorderWidth: 2
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        aspectRatio: 2.5,
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false,
-                                callbacks: {
-                                    label: function(context) {
-                                        return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + '°C';
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: false,
-                                title: {
-                                    display: true,
-                                    text: 'Temperature (°C)'
-                                },
-                                ticks: {
-                                    callback: function(value) {
-                                        return value.toFixed(0) + '°C';
-                                    }
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Time'
-                                },
-                                ticks: {
-                                    maxRotation: 45,
-                                    minRotation: 45
-                                }
-                            }
-                        },
-                        interaction: {
-                            mode: 'nearest',
-                            axis: 'x',
-                            intersect: false
-                        }
-                    }
-                });
-
-                // After chart is loaded, update temperature display for current image
-                if (galleryImages.length > 0 && currentAutoplayIndex >= 0) {
-                    const currentUrl = galleryImages[currentAutoplayIndex];
-                    const filename = currentUrl.substring(currentUrl.lastIndexOf('/') + 1);
-                    const datetime = parseDateTimeFromFilename(filename);
-                    const isoDatetime = datetime.replace(' ', 'T');
-                    updateTemperatureHighlight(isoDatetime);
-                }
-            } catch (error) {
-                console.error('Error loading temperature data:', error);
-                document.getElementById('temperatureChart').parentElement.innerHTML =
-                    '<p class="text-danger text-center">Error loading temperature data</p>';
-                document.getElementById('imageTemperature').textContent = 'Error';
-            }
-        }
-
-        async function loadPresenceChart(sessionNumber) {
-            try {
-                const response = await fetch(`/dashboard/api/motion/${sessionNumber}`);
-                const data = await response.json();
-
-                const timelineContainer = document.getElementById('presenceTimeline');
-                const labelsTopContainer = document.getElementById('timelineLabelsTop');
-                const labelsBottomContainer = document.getElementById('timelineLabelsBottom');
-
-                if (data.length === 0) {
-                    // Clear timeline elements
-                    const existingElements = timelineContainer.querySelectorAll('.timeline-dot, .timeline-segment, .timeline-connector');
-                    existingElements.forEach(el => el.remove());
-                    labelsTopContainer.innerHTML = '';
-                    labelsBottomContainer.innerHTML = '';
-
-                    // Show no data message in timeline
-                    const noDataMsg = document.createElement('p');
-                    noDataMsg.className = 'text-muted text-center';
-                    noDataMsg.style.cssText = 'line-height: 20px; margin: 0; font-size: 0.8rem; position: absolute; width: 100%; top: 50%; transform: translateY(-50%);';
-                    noDataMsg.textContent = 'No motion data available';
-                    timelineContainer.appendChild(noDataMsg);
-
-                    document.getElementById('presencePercentage').innerHTML = 'N/A';
-                    document.getElementById('presenceStats').textContent = 'No data';
-
-                    // Destroy pie chart if it exists
-                    if (presencePieChart) {
-                        presencePieChart.destroy();
-                        presencePieChart = null;
-                    }
-                    return;
-                }
-
-                // Clear existing content (but keep the containers)
-                const existingElements = timelineContainer.querySelectorAll('.timeline-dot, .timeline-segment, .timeline-connector, p');
-                existingElements.forEach(el => el.remove());
-                labelsTopContainer.innerHTML = '';
-                labelsBottomContainer.innerHTML = '';
-
-                // Process data
-                let totalPresentDuration = 0;
-                let totalAwayDuration = 0;
-
-                // Get time range
-                const startTime = new Date(data[0].datetime);
-                const endTime = new Date(data[data.length - 1].datetime);
-                const totalDuration = endTime - startTime;
-
-                // Create dots, segments, and labels for each event
-                for (let i = 0; i < data.length; i++) {
-                    const currentPoint = data[i];
-                    const currentTime = new Date(currentPoint.datetime);
-
-                    // Calculate position as percentage
-                    const positionPercent = ((currentTime - startTime) / totalDuration) * 100;
-
-                    // Determine if this label goes on top or bottom (alternate)
-                    const isTop = i % 2 === 0;
-
-                    // Create dot
-                    const dot = document.createElement('div');
-                    dot.className = 'timeline-dot';
-                    dot.style.position = 'absolute';
-                    dot.style.left = positionPercent + '%';
-                    dot.style.top = '50%';
-                    dot.style.width = '12px';
-                    dot.style.height = '12px';
-                    dot.style.borderRadius = '50%';
-                    dot.style.backgroundColor = currentPoint.value ? '#28a745' : '#dc3545'; // Green if present, red if away
-                    dot.style.transform = 'translate(-50%, -50%)';
-                    dot.style.border = '2px solid white';
-                    dot.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
-                    dot.style.zIndex = '10';
-                    dot.style.cursor = 'pointer';
-
-                    // Add tooltip on hover
-                    const timeStr = currentTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                    const status = currentPoint.value ? 'Present' : 'Away';
-                    dot.title = `${timeStr} - ${status}`;
-
-                    timelineContainer.appendChild(dot);
-
-                    // Create connector line from dot to label
-                    const connector = document.createElement('div');
-                    connector.className = 'timeline-connector';
-                    connector.style.position = 'absolute';
-                    connector.style.left = positionPercent + '%';
-                    connector.style.width = '2px';
-                    connector.style.backgroundColor = currentPoint.value ? '#28a745' : '#dc3545';
-                    connector.style.transform = 'translateX(-50%)';
-                    connector.style.zIndex = '8';
-                    connector.style.opacity = '0.4';
-
-                    if (isTop) {
-                        connector.style.top = '0';
-                        connector.style.height = '50%';
-                    } else {
-                        connector.style.top = '50%';
-                        connector.style.height = '50%';
-                    }
-
-                    timelineContainer.appendChild(connector);
-
-                    // Create colored line segment to next event (if not last event)
-                    if (i < data.length - 1) {
-                        const nextPoint = data[i + 1];
-                        const nextTime = new Date(nextPoint.datetime);
-                        const nextPositionPercent = ((nextTime - startTime) / totalDuration) * 100;
-                        const segmentWidth = nextPositionPercent - positionPercent;
-
-                        const segment = document.createElement('div');
-                        segment.className = 'timeline-segment';
-                        segment.style.position = 'absolute';
-                        segment.style.left = positionPercent + '%';
-                        segment.style.width = segmentWidth + '%';
-                        segment.style.top = '50%';
-                        segment.style.height = '4px';
-                        segment.style.backgroundColor = currentPoint.value ? '#28a745' : '#dc3545';
-                        segment.style.transform = 'translateY(-50%)';
-                        segment.style.zIndex = '5';
-
-                        timelineContainer.appendChild(segment);
-
-                        // Calculate duration for this segment
-                        const segmentDuration = nextTime - currentTime;
-                        if (currentPoint.value) {
-                            totalPresentDuration += segmentDuration;
-                        } else {
-                            totalAwayDuration += segmentDuration;
-                        }
-                    }
-
-                    // Create time label
-                    const label = document.createElement('div');
-                    label.style.position = 'absolute';
-                    label.style.left = positionPercent + '%';
-                    label.style.transform = 'translateX(-50%)';
-                    label.style.fontSize = '0.7rem';
-                    label.style.color = currentPoint.value ? '#28a745' : '#dc3545';
-                    label.style.textAlign = 'center';
-                    label.style.whiteSpace = 'nowrap';
-                    label.style.fontWeight = '600';
-                    label.style.padding = '2px 6px';
-                    label.style.borderRadius = '4px';
-                    label.style.backgroundColor = 'white';
-                    label.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-                    label.textContent = timeStr;
-
-                    if (isTop) {
-                        label.style.bottom = '0';
-                        labelsTopContainer.appendChild(label);
-                    } else {
-                        label.style.top = '0';
-                        labelsBottomContainer.appendChild(label);
-                    }
-
-                }
-
-                // Calculate percentage based on duration, not event count
-                const totalTime = totalPresentDuration + totalAwayDuration;
-                const percentage = totalTime > 0 ? ((totalPresentDuration / totalTime) * 100).toFixed(1) : 0;
-
-                // Convert milliseconds to readable format
-                const formatDuration = (ms) => {
-                    const totalSeconds = Math.floor(ms / 1000);
-                    const minutes = Math.floor(totalSeconds / 60);
-                    const seconds = totalSeconds % 60;
-                    if (minutes > 0) {
-                        return `${minutes}m ${seconds}s`;
-                    }
-                    return `${seconds}s`;
-                };
-
-                // Update stats
-                document.getElementById('presencePercentage').innerHTML = `${percentage}%`;
-                document.getElementById('presenceStats').textContent = `${formatDuration(totalPresentDuration)} / ${formatDuration(totalAwayDuration)}`;
-
-                // Create or update pie chart
-                const pieCtx = document.getElementById('presencePieChart');
-                if (presencePieChart) {
-                    presencePieChart.destroy();
-                }
-
-                presencePieChart = new Chart(pieCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Present', 'Away'],
-                        datasets: [{
-                            data: [totalPresentDuration, totalAwayDuration],
-                            backgroundColor: ['#28a745', '#dc3545'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: false,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        const label = context.label || '';
-                                        const value = formatDuration(context.parsed);
-                                        const percent = ((context.parsed / totalTime) * 100).toFixed(1);
-                                        return `${label}: ${value} (${percent}%)`;
-                                    }
-                                }
-                            }
-                        },
-                        cutout: '60%'
-                    }
-                });
-
-            } catch (error) {
-                console.error('Error loading motion data:', error);
-                document.getElementById('presenceTimeline').parentElement.innerHTML =
-                    '<p class="text-danger text-center" style="line-height: 20px; margin: 0; font-size: 0.8rem;">Error loading data</p>';
-                document.getElementById('presencePercentage').innerHTML = 'Error';
-                document.getElementById('presenceStats').textContent = 'Error';
-            }
-        }
-
+    <script th:inline="javascript">
+        // Timeline Ingredients Processing
         function getIngredientEmoji(ingredient) {
             const lower = ingredient.toLowerCase().trim();
             const emojiMap = {
-                'chicken': '🍗', 'beef': '🥩', 'pork': '🥓', 'fish': '🐟', 'shrimp': '🍤',
-                'egg': '🥚', 'eggs': '🥚', 'rice': '🍚', 'pasta': '🍝', 'noodles': '🍜',
-                'bread': '🍞', 'cheese': '🧀', 'milk': '🥛', 'butter': '🧈',
-                'tomato': '🍅', 'tomatoes': '🍅', 'potato': '🥔', 'potatoes': '🥔',
-                'carrot': '🥕', 'carrots': '🥕', 'onion': '🧅', 'onions': '🧅',
-                'garlic': '🧄', 'pepper': '🌶️', 'peppers': '🌶️', 'broccoli': '🥦',
-                'mushroom': '🍄', 'mushrooms': '🍄', 'corn': '🌽', 'lemon': '🍋',
-                'lime': '🍋', 'avocado': '🥑', 'cucumber': '🥒', 'eggplant': '🍆',
-                'lettuce': '🥬', 'spinach': '🥬', 'salt': '🧂', 'oil': '🫒', 'olive oil': '🫒'
+                'chicken': '🍗', 'beef': '🥩', 'pork': '🥓', 'fish': '🐟', 'salmon': '🐟',
+                'shrimp': '🦐', 'egg': '🥚', 'cheese': '🧀', 'milk': '🥛', 'butter': '🧈',
+                'rice': '🍚', 'pasta': '🍝', 'bread': '🍞', 'potato': '🥔', 'tomato': '🍅',
+                'onion': '🧅', 'garlic': '🧄', 'carrot': '🥕', 'broccoli': '🥦', 'pepper': '🌶️',
+                'mushroom': '🍄', 'corn': '🌽', 'lettuce': '🥬', 'spinach': '🥬', 'cucumber': '🥒',
+                'apple': '🍎', 'banana': '🍌', 'lemon': '🍋', 'strawberry': '🍓', 'orange': '🍊',
+                'salt': '🧂', 'sugar': '🍬', 'oil': '🫗', 'soy sauce': '🥫', 'vinegar': '🫙'
             };
-            return emojiMap[lower] || '🥕';
+            return emojiMap[lower] || '🥘';
         }
 
-        function parseDateTimeFromFilename(filename) {
-            // Extract date and time from filename like: img_31_20250928_204054.jpg
-            // Pattern: img_XX_YYYYMMDD_HHMMSS.jpg
-            const match = filename.match(/img_\d+_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})/);
-            if (match) {
-                const year = match[1];
-                const month = match[2];
-                const day = match[3];
-                const hour = match[4];
-                const minute = match[5];
-                const second = match[6];
-                return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
-            }
-            return 'Unknown';
-        }
-
-        function showSessionDetails(button) {
-            const modal = document.getElementById('sessionDetailsModal');
-            const sessionNumber = button.getAttribute('data-session');
-            const dish = button.getAttribute('data-dish');
-            const style = button.getAttribute('data-style');
-            const duration = button.getAttribute('data-duration');
-            const temp = button.getAttribute('data-temp');
-            const dateTime = button.getAttribute('data-datetime');
-            const ingredients = button.getAttribute('data-ingredients');
-            const imageUrl = button.getAttribute('data-image');
-            const allImages = button.getAttribute('data-all-images');
-
-            // Store current session number
-            currentSessionNumber = sessionNumber;
-
-            // Set modal content
-            document.getElementById('modalSessionNumberBadge').textContent = '#' + sessionNumber;
-            document.getElementById('modalDish').textContent = dish;
-            document.getElementById('modalStyleBadge').textContent = style;
-            document.getElementById('modalDateTime').textContent = dateTime;
-
-            // Handle optional fields
-            const durationRow = document.getElementById('modalDurationRow');
-            const tempRow = document.getElementById('modalTempRow');
-
-            if (duration && duration !== 'null') {
-                document.getElementById('modalDuration').textContent = duration;
-                durationRow.style.display = 'flex';
-            } else {
-                durationRow.style.display = 'none';
-            }
-
-            if (temp && temp !== 'null') {
-                document.getElementById('modalTemp').textContent = temp;
-                tempRow.style.display = 'flex';
-            } else {
-                tempRow.style.display = 'none';
-            }
-
-            // Parse and display ingredients inline
-            const ingredientsInlineContainer = document.getElementById('modalIngredientsInline');
-            ingredientsInlineContainer.innerHTML = '';
-
-            if (ingredients) {
-                const cleanIngredients = ingredients.replace(/[{}]/g, '');
-                const ingredientList = cleanIngredients.split(',');
-
-                ingredientList.forEach(ingredient => {
-                    const trimmed = ingredient.trim();
-                    if (trimmed) {
-                        const badge = document.createElement('span');
-                        badge.className = 'badge rounded-pill bg-light text-dark border';
-                        badge.innerHTML = getIngredientEmoji(trimmed) + ' ' + trimmed;
-                        ingredientsInlineContainer.appendChild(badge);
-                    }
-                });
-            }
-
-            // Populate image gallery
-            const galleryContainer = document.getElementById('imageGallery');
-            galleryContainer.innerHTML = '';
-
-            // Stop any existing autoplay
-            if (autoplayInterval) {
-                toggleAutoplay();
-            }
-
-            if (allImages && allImages !== 'null' && allImages !== '') {
-                const imageUrls = allImages.split('|').filter(url => url.trim() !== '');
-
-                // Store images in global array for autoplay
-                galleryImages = imageUrls;
-
-                // Set the main image to the last image by default
-                const modalImage = document.getElementById('modalImage');
-                if (imageUrls.length > 0) {
-                    const lastImageUrl = imageUrls[imageUrls.length - 1];
-                    modalImage.src = lastImageUrl || '/mimra_hq.jpg';
-                    modalImage.onerror = function() { this.src = '/mimra_hq.jpg'; };
-                    currentAutoplayIndex = imageUrls.length - 1;
-                    // Update caption and temperature highlight for the last image
-                    setTimeout(() => updateImageCaption(currentAutoplayIndex), 100);
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set background images (no dark overlay)
+            document.querySelectorAll('.timeline-content').forEach(function(content) {
+                const imageUrl = content.getAttribute('data-image-url');
+                if (imageUrl) {
+                    content.style.backgroundImage = 'url(\'' + imageUrl + '\')';
                 }
+            });
 
-                imageUrls.forEach((url, index) => {
-                    const filename = url.substring(url.lastIndexOf('/') + 1);
-                    const datetime = parseDateTimeFromFilename(filename);
-
-                    const galleryItem = document.createElement('div');
-                    galleryItem.className = 'gallery-item';
-
-                    // Mark the last image as active by default
-                    if (index === imageUrls.length - 1) {
-                        galleryItem.classList.add('active');
+            // Format dates to show only date (no time)
+            document.querySelectorAll('.timeline-datetime-compact span').forEach(function(dateSpan) {
+                const dateTimeStr = dateSpan.textContent.trim();
+                if (dateTimeStr && dateTimeStr !== 'Date') {
+                    try {
+                        const dateOnly = dateTimeStr.split('T')[0];
+                        dateSpan.textContent = dateOnly;
+                    } catch (e) {
+                        console.log('Could not parse date:', dateTimeStr);
                     }
+                }
+            });
 
-                    // Determine if this is first or last image
-                    const isFirst = index === 0;
-                    const isLast = index === imageUrls.length - 1;
-                    const tagBadge = isFirst ? '<span class="gallery-tag start">Start</span>' :
-                                     isLast ? '<span class="gallery-tag end">End</span>' : '';
+            // Set ingredients
+            document.querySelectorAll('.timeline-ingredients').forEach(function(container) {
+                const ingredientsStr = container.getAttribute('data-ingredients');
+                if (ingredientsStr) {
+                    const cleanIngredients = ingredientsStr.replace(/[{}]/g, '');
+                    const ingredientList = cleanIngredients.split(',').map(i => i.trim()).filter(i => i);
 
-                    galleryItem.innerHTML = `
-                        ${tagBadge}
-                        <img src="${url}" alt="${datetime}" onerror="this.style.display='none'">
-                        <div class="gallery-caption">
-                            <i class="fas fa-clock me-1"></i>
-                            ${datetime.substring(11)}
-                        </div>
-                    `;
-
-                    // Add click handler to change main image
-                    galleryItem.addEventListener('click', function() {
-                        // Stop autoplay when manually clicking
-                        if (autoplayInterval) {
-                            toggleAutoplay();
-                        }
-
-                        // Update current index
-                        currentAutoplayIndex = index;
-
-                        // Remove active class from all items
-                        document.querySelectorAll('.gallery-item').forEach(item => {
-                            item.classList.remove('active');
+                    let html = '';
+                    if (ingredientList.length <= 2) {
+                        ingredientList.forEach(ing => {
+                            html += '<span class="ingredient-emoji">' + getIngredientEmoji(ing) + '</span>';
                         });
-
-                        // Add active class to clicked item
-                        this.classList.add('active');
-
-                        // Update main image
-                        modalImage.src = url;
-                        modalImage.onerror = function() { this.src = '/mimra_hq.jpg'; };
-
-                        // Update caption
-                        updateImageCaption(index);
-                    });
-
-                    galleryContainer.appendChild(galleryItem);
-                });
-            } else {
-                galleryContainer.innerHTML = '<p class="text-muted text-center small">No images available</p>';
-            }
-
-            // Load temperature chart
-            loadTemperatureChart(sessionNumber);
-
-            // Load motion presence chart
-            loadPresenceChart(sessionNumber);
-
-            // Show modal
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            setTimeout(() => modal.classList.add('show'), 10);
-        }
-
-        function closeSessionDetails() {
-            const modal = document.getElementById('sessionDetailsModal');
-            modal.classList.remove('show');
-            document.body.style.overflow = 'auto';
-            setTimeout(() => modal.style.display = 'none', 300);
-        }
-
-        // Close modal on escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeSessionDetails();
-            }
+                    } else {
+                        html += '<span class="ingredient-emoji">' + getIngredientEmoji(ingredientList[0]) + '</span>';
+                        html += '<span class="ingredient-emoji">' + getIngredientEmoji(ingredientList[1]) + '</span>';
+                        html += '<span class="ingredient-count">+' + (ingredientList.length - 2) + '</span>';
+                    }
+                    container.innerHTML = html;
+                }
+            });
         });
 
-        // Close modal on background click
-        document.getElementById('sessionDetailsModal').addEventListener('click', function(event) {
-            if (event.target === this) {
-                closeSessionDetails();
-            }
+        // Cooking Styles Data
+        var cookingStyleLabels = [[${allCookingStyles}]];
+        var cookingStyleCountsObj = [[${cookingStyleCounts}]];
+        var cookingStyleData = cookingStyleLabels.map(function(style) {
+            return cookingStyleCountsObj[style] || 0;
         });
+
+        console.log('Cooking Styles:', cookingStyleLabels);
+        console.log('Cooking Style Counts:', cookingStyleCountsObj);
+        console.log('Cooking Style Data:', cookingStyleData);
+
+        // Ingredients Data (top 10)
+        var allIngredientsList = [[${allIngredients}]];
+        var ingredientCountsMap = [[${ingredientCounts}]];
+        var topIngredients = allIngredientsList.slice(0, 10);
+        var ingredientData = topIngredients.map(function(ingredient) {
+            return ingredientCountsMap[ingredient] || 0;
+        });
+
+        console.log('Top Ingredients:', topIngredients);
+        console.log('Ingredient Counts Map:', ingredientCountsMap);
+        console.log('Ingredient Data:', ingredientData);
+
+        // Color palettes
+        const cookingStyleColors = [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+            '#FF9F40', '#FF6384', '#C9CBCF', '#4BC0C0', '#FF6384'
+        ];
+
+        const ingredientColors = [
+            '#27ae60', '#2ecc71', '#3498db', '#9b59b6', '#e74c3c',
+            '#f39c12', '#1abc9c', '#34495e', '#16a085', '#d35400'
+        ];
+
+        // Cooking Styles Chart
+        if (cookingStyleLabels.length > 0) {
+            const ctxStyles = document.getElementById('cookingStylesChart');
+            new Chart(ctxStyles, {
+                type: 'bar',
+                data: {
+                    labels: cookingStyleLabels,
+                    datasets: [{
+                        label: 'Number of Sessions',
+                        data: cookingStyleData,
+                        backgroundColor: cookingStyleColors.slice(0, cookingStyleLabels.length),
+                        borderColor: cookingStyleColors.slice(0, cookingStyleLabels.length),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 2,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Sessions: ' + context.parsed.y;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            },
+                            title: {
+                                display: true,
+                                text: 'Number of Sessions'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Cooking Style'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Ingredients Chart
+        if (topIngredients.length > 0) {
+            const ctxIngredients = document.getElementById('ingredientsChart');
+            new Chart(ctxIngredients, {
+                type: 'bar',
+                data: {
+                    labels: topIngredients,
+                    datasets: [{
+                        label: 'Usage Count',
+                        data: ingredientData,
+                        backgroundColor: ingredientColors.slice(0, topIngredients.length),
+                        borderColor: ingredientColors.slice(0, topIngredients.length),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 2,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Used in: ' + context.parsed.x + ' session(s)';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            },
+                            title: {
+                                display: true,
+                                text: 'Number of Uses'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Ingredient'
+                            }
+                        }
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>

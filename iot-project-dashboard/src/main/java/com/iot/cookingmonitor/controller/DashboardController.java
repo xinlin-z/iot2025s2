@@ -14,11 +14,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
+import java.time.format.DateTimeFormatter;
+import java.time.YearMonth;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -40,30 +44,30 @@ public class DashboardController {
     public String dashboard(Model model) {
         List<CookingSession> cookingSessions = cookingSessionService.getAllCookingSessions();
 
-        // Fetch first image URL for each session
-        Map<Integer, String> sessionImageUrls = new HashMap<>();
-        Map<Integer, List<String>> sessionAllImageUrls = new HashMap<>();
-
+        // Get last image for each session
         for (CookingSession session : cookingSessions) {
-            String imageUrl = imageScraperService.getFirstImageUrl(session.getSessionNumber());
             List<String> allImageUrls = imageScraperService.getAllImageUrls(session.getSessionNumber());
-
-            sessionImageUrls.put(session.getSessionNumber(), imageUrl);
-            sessionAllImageUrls.put(session.getSessionNumber(), allImageUrls);
+            if (!allImageUrls.isEmpty()) {
+                session.setImageUrl(allImageUrls.get(allImageUrls.size() - 1));
+            }
         }
 
         // Calculate statistics
         int totalSessions = cookingSessions.size();
 
-        // Get all unique cooking styles
-        List<String> allCookingStyles = cookingSessions.stream()
+        // Count cooking styles
+        Map<String, Long> cookingStyleCounts = cookingSessions.stream()
             .map(CookingSession::getCookingStyle)
             .filter(style -> style != null && !style.isEmpty())
-            .distinct()
+            .collect(Collectors.groupingBy(style -> style, Collectors.counting()));
+
+        // Get all unique cooking styles
+        List<String> allCookingStyles = cookingStyleCounts.keySet().stream()
+            .sorted()
             .collect(Collectors.toList());
 
-        // Get all unique ingredients
-        List<String> allIngredients = cookingSessions.stream()
+        // Count ingredients
+        Map<String, Long> ingredientCounts = cookingSessions.stream()
             .map(CookingSession::getIngredients)
             .filter(ingredients -> ingredients != null && !ingredients.isEmpty())
             .flatMap(ingredients -> {
@@ -73,16 +77,45 @@ public class DashboardController {
                     .map(String::trim)
                     .filter(s -> !s.isEmpty());
             })
-            .distinct()
-            .sorted()
+            .collect(Collectors.groupingBy(ingredient -> ingredient, Collectors.counting()));
+
+        // Get all unique ingredients sorted by count (descending)
+        List<String> allIngredients = ingredientCounts.entrySet().stream()
+            .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+            .map(Map.Entry::getKey)
             .collect(Collectors.toList());
 
-        model.addAttribute("cookingSessions", cookingSessions);
-        model.addAttribute("sessionImageUrls", sessionImageUrls);
-        model.addAttribute("sessionAllImageUrls", sessionAllImageUrls);
+        // Sort sessions by date (latest first) for timeline
+        List<CookingSession> sortedSessions = cookingSessions.stream()
+            .sorted((s1, s2) -> s2.getDateTime().compareTo(s1.getDateTime()))
+            .collect(Collectors.toList());
+
+        // Create index map for alternating positions
+        Map<CookingSession, Integer> sessionIndexMap = new HashMap<>();
+        for (int i = 0; i < sortedSessions.size(); i++) {
+            sessionIndexMap.put(sortedSessions.get(i), i);
+        }
+
+        // Group sessions by month for timeline (latest first)
+        Map<String, List<CookingSession>> sessionsByMonth = sortedSessions.stream()
+            .collect(Collectors.groupingBy(
+                session -> {
+                    YearMonth yearMonth = YearMonth.from(session.getDateTime());
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM yyyy");
+                    return session.getDateTime().format(formatter);
+                },
+                LinkedHashMap::new,
+                Collectors.toList()
+            ));
+
         model.addAttribute("totalSessions", totalSessions);
         model.addAttribute("allCookingStyles", allCookingStyles);
         model.addAttribute("allIngredients", allIngredients);
+        model.addAttribute("cookingStyleCounts", cookingStyleCounts);
+        model.addAttribute("ingredientCounts", ingredientCounts);
+        model.addAttribute("cookingSessions", cookingSessions);
+        model.addAttribute("sessionsByMonth", sessionsByMonth);
+        model.addAttribute("sessionIndexMap", sessionIndexMap);
         return "dashboard";
     }
 
@@ -106,9 +139,8 @@ public class DashboardController {
             .map(temp -> {
                 Map<String, Object> data = new HashMap<>();
                 data.put("datetime", temp.getDatetime().toString());
-                // Convert Fahrenheit to Celsius
-                double celsius = (temp.getValue() - 32) * 5.0 / 9.0;
-                data.put("value", celsius);
+                // Temperature is already in Celsius
+                data.put("value", temp.getValue());
                 return data;
             })
             .collect(Collectors.toList());
@@ -159,9 +191,8 @@ public class DashboardController {
 
         Map<String, Object> result = new HashMap<>();
         result.put("datetime", closestTemp.getDatetime().toString());
-        // Convert Fahrenheit to Celsius
-        double celsius = (closestTemp.getValue() - 32) * 5.0 / 9.0;
-        result.put("value", celsius);
+        // Temperature is already in Celsius
+        result.put("value", closestTemp.getValue());
         result.put("index", temperatures.indexOf(closestTemp));
         return result;
     }
@@ -200,3 +231,4 @@ public class DashboardController {
         return result;
     }
 }
+

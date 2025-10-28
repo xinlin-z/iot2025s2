@@ -135,6 +135,9 @@
                 let totalPresent = 0;
                 let totalAway = 0;
 
+                // Check if there's only one motion reading that is true
+                const hasOnlyOneTrueReading = data.length === 1 && data[0].value === true;
+
                 data.forEach(point => {
                     const datetime = new Date(point.datetime);
                     labels.push(datetime.toLocaleTimeString());
@@ -148,8 +151,14 @@
                 });
 
                 // Calculate percentage
-                const totalReadings = totalPresent + totalAway;
-                const percentage = totalReadings > 0 ? ((totalPresent / totalReadings) * 100).toFixed(1) : 0;
+                // Special case: if there's only one motion reading that is true, assume 100% presence
+                let percentage;
+                if (hasOnlyOneTrueReading) {
+                    percentage = 100.0;
+                } else {
+                    const totalReadings = totalPresent + totalAway;
+                    percentage = totalReadings > 0 ? ((totalPresent / totalReadings) * 100).toFixed(1) : 0;
+                }
 
                 // Update stats
                 document.getElementById('presencePercentage').innerHTML = `${percentage}%`;
